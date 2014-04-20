@@ -544,6 +544,10 @@ Overlay.prototype.isVisible = function() {
  * @author Lars Parick Hess <larshess@gmail.com>
  */
 (function() {
+	/**
+	 * @param {string} identifier
+	 * @returns {ModalWindow}
+	 */
 	$.modalwindow = function(identifier) {
 		var modalWindowInstance = null;
 
@@ -568,6 +572,7 @@ Overlay.prototype.isVisible = function() {
 	 */
 	$.modalwindow.options = {
 		pluginNamespace: 'modalwindow',
+		identifier: null,
 		windowManager: {
 		},
 		overlay: {
@@ -582,7 +587,8 @@ Overlay.prototype.isVisible = function() {
 	/**
 	 * jQuery PlugIn "modalwindow".
 	 *
-	 * @return {jQuery} | ModalWindow
+	 * @param {object} options
+	 * @return {jQuery}
 	 */
 	$.fn.modalwindow = function(options) {
 		console.log('$.fn.modalwindow called on ' + this.length + ' element(s)');
@@ -591,62 +597,31 @@ Overlay.prototype.isVisible = function() {
 			pluginNamespace: $.modalwindow.options.pluginNamespace
 		}, options);
 
-		/**
-		 * Starts the rendering process of an modal-window instance.
-		 *
-		 * @param {$.Event} event
-		 * @param {object} instanceOptions
-		 *
-		 * @return void
-		 */
-		var run = function(event, $base, instanceOptions) {
-			$base.blur();
-			if (!(event.ctrlKey || event.altKey || event.shiftKey || event.metaKey) && !$base.is('.modalwindow-window-wrap')) {
-				console.log('$.fn.modalwindow::run', $base);
-
-				instanceOptions.type = 'ajax';
-				instanceOptions.typeOptions = {
-					href: $base.attr('href')
-				};
-
-				$base
-					.data(instanceOptions.pluginNamespace + '-instance')
-					.open(instanceOptions);
-			}
-		};
-
 		this.each(function() {
 			var $this = $(this),
 			    selector = this.selector || '',
 			    modalWindowInstance = null,
-			    instanceOptions = options || {};
+			    instanceOptions = $.extend(true, {}, options, $this.data(options.pluginNamespace) || {});
 
-				if ($.isPlainObject($this.data(options.pluginNamespace))) {
-					$.extend(true, instanceOptions, $this.data(options.pluginNamespace));
+			if (!(modalWindowInstance = $this.data(instanceOptions.pluginNamespace + '-instance'))) {
+				var identifier = instanceOptions.identifier;
+				if (!identifier) {
+					identifier = instanceOptions.pluginNamespace + '_' + (modalWindowCounter++);
+				} else if (identifier === '__current' && modalWindowManagerInstance.current()) {
+					identifier = modalWindowManagerInstance.current().getIdentifier();
 				}
 
-			if ((modalWindowInstance = $this.data(instanceOptions.pluginNamespace + '-instance')) == null) {
-				var identifier = instanceOptions.identifier || instanceOptions.pluginNamespace + '_' + (modalWindowCounter++);
-				if (identifier === '__current') {
-					if (modalWindowManagerInstance.current()) {
-						identifier = modalWindowManagerInstance.current().getIdentifier();
-					} else {
-						identifier = instanceOptions.pluginNamespace + '_' + (modalWindowCounter++);
-					}
-				}
-
-				modalWindowInstance = $.modalwindow(identifier);
-				$this.data(instanceOptions.pluginNamespace + '-instance', modalWindowInstance);
+				$this.data(instanceOptions.pluginNamespace + '-instance', $.modalwindow(identifier));
 			}
 
 			$this
 				.unbind('open.' + instanceOptions.pluginNamespace)
+				.unbind('click.' + instanceOptions.pluginNamespace)
 				.bind('open.' + instanceOptions.pluginNamespace, function(event) {
 					event.stopPropagation();
 					run(event, $(this), instanceOptions);
 				});
 
-			$this.unbind('click.' + instanceOptions.pluginNamespace);
 			if (selector || instanceOptions.initializeWithClickEvent) {
 				$this.bind('click.' + instanceOptions.pluginNamespace, function(event) {
 					event.preventDefault();
@@ -656,6 +631,30 @@ Overlay.prototype.isVisible = function() {
 		});
 
 		return this;
+	};
+
+	/**
+	 * Starts the rendering process of an modal-window instance.
+	 *
+	 * @param {$.Event} event
+	 * @param {object} instanceOptions
+	 *
+	 * @return void
+	 */
+	var run = function(event, $base, instanceOptions) {
+		$base.blur();
+		if (!(event.ctrlKey || event.altKey || event.shiftKey || event.metaKey) && !$base.is('.modalwindow-window-wrap')) {
+			console.log('$.fn.modalwindow::run', $base);
+
+			instanceOptions.type = 'ajax';
+			instanceOptions.typeOptions = {
+				href: $base.attr('href')
+			};
+
+			$base
+				.data(instanceOptions.pluginNamespace + '-instance')
+				.open(instanceOptions);
+		}
 	};
 
 	var modalWindowManagerInstance = new ModalWindowManager($.extend({}, $.modalwindow.options.windowManager, {

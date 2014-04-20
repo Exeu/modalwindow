@@ -9,6 +9,32 @@ module.exports = function(grunt) {
 
 	grunt.initConfig({
 		pkg: grunt.file.readJSON('package.json'),
+		clean: [ 'dist/*' ],
+		jsvalidate: {
+			options:{
+				globals: {},
+				esprimaOptions: {},
+				verbose: false
+			},
+			targetName:{
+				files:{
+					src: [ '<%= jshint.files %>' ]
+				}
+			}
+		},
+		jshint: {
+			files: [ 'source/**/*.js' ],
+			options: {
+				eqeqeq: true,
+				eqnull: true,
+				globals: {
+					jQuery: true,
+					console: true,
+					module: true,
+					document: true
+				}
+			}
+		},
 		concat: {
 			options: {
 				separator: '\n\n',
@@ -26,28 +52,6 @@ module.exports = function(grunt) {
 				dest: 'dist/jquery.<%= pkg.name %>.js'
 			}
 		},
-		uglify: {
-			options: {
-				banner: '/*! <%= pkg.name %> <%= grunt.template.today("dd-mm-yyyy") %> */\n'
-			},
-			dist: {
-				files: {
-					'dist/jquery.<%= pkg.name %>.min.js': ['<%= removelogging.dist.dest %>']
-				}
-			}
-		},
-		jsvalidate: {
-			options:{
-				globals: {},
-				esprimaOptions: {},
-				verbose: false
-			},
-			targetName:{
-				files:{
-					src: [ '<%= jshint.files %>' ]
-				}
-			}
-		},
 		removelogging: {
 			dist: {
 				src: '<%= concat.dist.dest %>',
@@ -56,16 +60,13 @@ module.exports = function(grunt) {
 				}
 			}
 		},
-		jshint: {
-			files: [ 'source/**/*.js' ],
+		uglify: {
 			options: {
-				eqeqeq: true,
-				eqnull: true,
-				globals: {
-					jQuery: true,
-					console: true,
-					module: true,
-					document: true
+				banner: '/*! <%= pkg.name %> <%= grunt.template.today("dd-mm-yyyy") %> */\n'
+			},
+			dist: {
+				files: {
+					'dist/jquery.<%= pkg.name %>.min.js': ['<%= removelogging.dist.dest %>']
 				}
 			}
 		},
@@ -79,10 +80,11 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-jshint');
 	grunt.loadNpmTasks('grunt-contrib-watch');
 	grunt.loadNpmTasks('grunt-contrib-concat');
+	grunt.loadNpmTasks('grunt-contrib-clean');
 	grunt.loadNpmTasks('grunt-jsvalidate');
 	grunt.loadNpmTasks('grunt-remove-logging');
 
 
-	grunt.registerTask('dev', [ 'jsvalidate', 'jshint', 'concat' ]);
-	grunt.registerTask('default', [ 'dev:*', 'removelogging', 'uglify' ]);
+	grunt.registerTask('dev', [ 'clean', 'jsvalidate', 'jshint', 'concat' ]);
+	grunt.registerTask('default', [ 'clean', 'dev:*', 'removelogging', 'uglify']);
 };

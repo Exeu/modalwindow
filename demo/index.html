@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>ModalWindow</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+	<script type="text/javascript" src="../bower_components/jquery/dist/jquery.min.js"></script>
+
+	<script type="text/javascript" src="../dist/jquery.modalwindow.js"></script>
+	<link rel="stylesheet" type="text/css" href="../source/styles.css" media="screen" />
+
+	<script type="text/javascript">
+		$(function() {
+			$(document).on('click', '.modalwindow', function(event) {
+				event.preventDefault();
+
+				var $base = $(event.target);
+				$base.modalwindow().trigger('open');
+			});
+
+			$(document).keyup(function(event) {
+				if (event.keyCode == 27) {
+					event.preventDefault();
+					if ($.modalwindow() != null) {
+						$.modalwindow().close();
+					}
+				}
+			});
+		});
+	</script>
+</head>
+<body>
+	<h1>ModalWindow</h1>
+
+	<a href="ajax_test01.html" class="modalwindow">Click me!</a>
+</body>
+</html>

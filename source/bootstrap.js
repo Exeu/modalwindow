@@ -7,6 +7,4 @@
 
 var $html = $('html'),
 	$window = $(window),
-	$document = $(document),
-
-	overlayInstance = null;
+	$document = $(document);

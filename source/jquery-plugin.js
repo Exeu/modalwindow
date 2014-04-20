@@ -61,10 +61,9 @@
 		this.each(function() {
 			var $this = $(this),
 			    selector = this.selector || '',
-			    modalWindowInstance = null,
 			    instanceOptions = $.extend(true, {}, options, $this.data(options.pluginNamespace) || {});
 
-			if (!(modalWindowInstance = $this.data(instanceOptions.pluginNamespace + '-instance'))) {
+			if (!$.data(this, instanceOptions.pluginNamespace + '-instance')) {
 				var identifier = instanceOptions.identifier;
 				if (!identifier) {
 					identifier = instanceOptions.pluginNamespace + '_' + (modalWindowCounter++);
@@ -72,7 +71,7 @@
 					identifier = modalWindowManagerInstance.current().getIdentifier();
 				}
 
-				$this.data(instanceOptions.pluginNamespace + '-instance', $.modalwindow(identifier));
+				$.data(this, instanceOptions.pluginNamespace + '-instance', $.modalwindow(identifier));
 			}
 
 			$this

@@ -1,12 +1,6 @@
 module.exports = function(grunt) {
 	"use strict";
 
-	Array.prototype.remove = function(from, to) {
-		var rest = this.slice((to || from) + 1 || this.length);
-		this.length = from < 0 ? this.length + from : from;
-		return this.push.apply(this, rest);
-	};
-
 	grunt.initConfig({
 		pkg: grunt.file.readJSON('package.json'),
 		clean: [ 'dist/*' ],
@@ -42,13 +36,7 @@ module.exports = function(grunt) {
 				footer: '\n})(window, document, jQuery);'
 			},
 			dist: {
-				src: [
-					'source/bootstrap.js', 'source/logging.js', 'source/lib/*.js', 'source/jquery-plugin.js'
-				].filter(function(item) {
-					return grunt.cli.tasks.indexOf('dev') === 0
-						|| grunt.cli.tasks.indexOf('watch') === 0
-						|| item !== 'source/logging.js';
-				}),
+				src: [ 'source/bootstrap.js', 'source/lib/*.js', 'source/jquery-plugin.js' ],
 				dest: 'dist/jquery.<%= pkg.name %>.js'
 			}
 		},

@@ -74,5 +74,5 @@ module.exports = function(grunt) {
 
 
 	grunt.registerTask('dev', [ 'clean', 'jsvalidate', 'jshint', 'concat' ]);
-	grunt.registerTask('default', [ 'clean', 'dev:*', 'removelogging', 'uglify']);
+	grunt.registerTask('default', [ 'dev:*', 'removelogging', 'uglify']);
 };

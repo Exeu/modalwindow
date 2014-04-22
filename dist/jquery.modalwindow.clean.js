@@ -93,7 +93,7 @@ ModalWindow.prototype._repositionWindow = function(event) {
  * @param {object} options
  */
 ModalWindow.prototype.open = function(options) {
-	console.log('ModalWindow', this.getIdentifier(), 'open');
+	
 
 	this._options = options;
 	this._isOpen = true;
@@ -112,7 +112,7 @@ ModalWindow.prototype.close = function() {
 	if (!this._isOpen || !this._isActive) {
 		return;
 	}
-	console.log('ModalWindow', this.getIdentifier(), 'close');
+	
 
 	$document
 		.trigger('unload-window.' + this.getIdentifier())
@@ -171,7 +171,7 @@ ModalWindow.prototype.activate = function() {
 	if (this._isActive) {
 		return;
 	}
-	console.log('ModalWindow', this.getIdentifier(), 'activate');
+	
 
 	this._isActive = true;
 
@@ -185,7 +185,7 @@ ModalWindow.prototype.deactivate = function() {
 	if (!this._isActive) {
 		return;
 	}
-	console.log('ModalWindow', this.getIdentifier(), 'deactivate');
+	
 
 	this._isActive = false;
 
@@ -498,7 +498,7 @@ Overlay.prototype.hideLoading = function() {
  */
 Overlay.prototype.show = function() {
 	if (!this.isVisible()) {
-		console.log('Overlay.prototype.show show overlay');
+		
 
 		if (this._domElement == null) {
 			this._initialize();
@@ -514,7 +514,7 @@ Overlay.prototype.show = function() {
  */
 Overlay.prototype.hide = function() {
 	if (this.isVisible()) {
-		console.log('Overlay.prototype.show hide overlay');
+		
 
 		$html.removeClass('modalwindow-lock');
 		this._domElement.hide();
@@ -551,7 +551,7 @@ Overlay.prototype.isVisible = function() {
 		}
 
 		if (modalWindowInstance === undefined) {
-			console.log('$.modalwindow initializes identifier "' + identifier + '"');
+			
 
 			modalWindowInstance = new ModalWindow(identifier);
 			modalWindowManagerInstance.add(identifier, modalWindowInstance);
@@ -587,7 +587,7 @@ Overlay.prototype.isVisible = function() {
 	 * @return {jQuery}
 	 */
 	$.fn.modalwindow = function(options) {
-		console.log('$.fn.modalwindow called on ' + this.length + ' element(s)');
+		
 
 		options = $.extend(true, {}, $.modalwindow.options.modalWindow, {
 			pluginNamespace: $.modalwindow.options.pluginNamespace
@@ -638,7 +638,7 @@ Overlay.prototype.isVisible = function() {
 	var run = function(event, $base, instanceOptions) {
 		$base.blur();
 		if (!(event.ctrlKey || event.altKey || event.shiftKey || event.metaKey) && !$base.is('.modalwindow-window-wrap')) {
-			console.log('$.fn.modalwindow::run', $base);
+			
 
 			instanceOptions.typeOptions.href = $base.attr('href');
 

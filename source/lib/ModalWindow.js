@@ -218,8 +218,13 @@ ModalWindow.prototype._loadContent = function() {
 		url: this._options.typeOptions.href
 	})
 		.done(function(data, textStatus, jqXHR) {
-			self._innerDomElement.html(data);
-			$document.trigger('hide-loading.' + self._options.pluginNamespace);
-			self.activate();
+			self._renderContentCallback(data);
 		});
 };
+
+ModalWindow.prototype._renderContentCallback = function(content) {
+	this._innerDomElement.html(content);
+	$document.trigger('hide-loading.' + this._options.pluginNamespace);
+	this.activate();
+};
+

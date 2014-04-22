@@ -41,7 +41,10 @@
 		modalWindow: {
 			initializeWithClickEvent: true,
 			width:  800,
-			height: 400
+			height: 400,
+			type:   'ajax',
+			typeOptions: {
+			}
 		}
 	};
 
@@ -58,7 +61,7 @@
 			pluginNamespace: $.modalwindow.options.pluginNamespace
 		}, options);
 
-		this.each(function() {
+		return this.each(function() {
 			var $this = $(this),
 			    selector = this.selector || '',
 			    instanceOptions = $.extend(true, {}, options, $this.data(options.pluginNamespace) || {});
@@ -89,14 +92,13 @@
 				});
 			}
 		});
-
-		return this;
 	};
 
 	/**
 	 * Starts the rendering process of an modal-window instance.
 	 *
 	 * @param {$.Event} event
+	 * @param {DOMelement} $base
 	 * @param {object} instanceOptions
 	 *
 	 * @return void
@@ -106,10 +108,7 @@
 		if (!(event.ctrlKey || event.altKey || event.shiftKey || event.metaKey) && !$base.is('.modalwindow-window-wrap')) {
 			console.log('$.fn.modalwindow::run', $base);
 
-			instanceOptions.type = 'ajax';
-			instanceOptions.typeOptions = {
-				href: $base.attr('href')
-			};
+			instanceOptions.typeOptions.href = $base.attr('href');
 
 			$base
 				.data(instanceOptions.pluginNamespace + '-instance')
